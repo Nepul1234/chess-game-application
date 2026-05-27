@@ -30,7 +30,7 @@ export const useChessGame = () => {
 
       if (result) {
         setGame(gameCopy);
-        setGameHistory(gameCopy.history({ verbose: true }));
+        setGameHistory(prev => [...prev, result]);
         updateStatus(gameCopy);
         setSelectedSquare(null);
         setLegalMoves([]);
@@ -53,21 +53,16 @@ export const useChessGame = () => {
   }, []);
 
   const undoMove = useCallback(() => {
-    const gameCopy = new Chess(game.fen());
-
-    // Undo AI move
-    gameCopy.undo();
-    // Undo player move
-    gameCopy.undo();
-
-    if (gameCopy) {
-      setGame(gameCopy);
-      setGameHistory(gameCopy.history({ verbose: true }));
-      updateStatus(gameCopy);
-      setSelectedSquare(null);
-      setLegalMoves([]);
-    }
-  }, [game, updateStatus]);
+    if (gameHistory.length < 2) return;
+    const remainingMoves = gameHistory.slice(0, -2);
+    const newGame = new Chess();
+    remainingMoves.forEach(m => newGame.move(m.san));
+    setGame(newGame);
+    setGameHistory(remainingMoves);
+    updateStatus(newGame);
+    setSelectedSquare(null);
+    setLegalMoves([]);
+  }, [gameHistory, updateStatus]);
 
   const resign = useCallback(() => {
     setStatus(GAME_STATUS.RESIGNED);
@@ -118,7 +113,7 @@ export const useChessGame = () => {
     getKingSquare,
     fen: game.fen(),
     turn: game.turn(),
-    isGameOver: game.isGameOver(),
+    isGameOver: game.isGameOver() || status === GAME_STATUS.RESIGNED,
     pgn: game.pgn(),
   };
 };

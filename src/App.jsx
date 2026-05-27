@@ -182,13 +182,6 @@ function App() {
     setBoardOrientation(config.playerColor === 'w' ? 'white' : 'black');
     resetGame();
     setLastMove(null);
-
-    // If AI plays white, make AI move
-    if (config.playerColor === 'b') {
-      setTimeout(() => {
-        handleAIMove();
-      }, 500);
-    }
   };
 
   const handleNewGame = () => {
@@ -204,7 +197,6 @@ function App() {
 
   const handleResign = () => {
     resign();
-    recordLoss();
   };
 
   const handleFlipBoard = () => {

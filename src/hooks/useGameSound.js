@@ -7,18 +7,27 @@ export const useGameSound = () => {
     return saved === null ? true : saved === 'true';
   });
 
-  const audioCache = useRef({});
+  const audioContextRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.SOUND, soundEnabled.toString());
   }, [soundEnabled]);
 
+  useEffect(() => {
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
+  }, []);
+
   const playSound = useCallback((soundType) => {
     if (!soundEnabled) return;
 
-    // For this implementation, we'll use simple beep sounds
-    // In a production app, you would load actual sound files
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const audioContext = audioContextRef.current;
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
