@@ -1,145 +1,100 @@
-# Chess Game Application
+# Chess Game
 
-A fully-featured chess game built with React 18, Vite, and Tailwind CSS. Play against an AI opponent powered by Stockfish.js with multiple difficulty levels.
+A fully-featured chess application built with React 18 and Vite, with an AI opponent powered by the Stockfish engine running in a Web Worker.
 
 ## Features
 
-### Core Gameplay
-- **Full Chess Rules Implementation** - All standard chess rules including castling, en passant, and pawn promotion
-- **AI Opponent** - Play against Stockfish.js engine with 5 difficulty levels
-- **Move Validation** - Only legal moves are allowed
-- **Move Highlighting** - See legal moves when a piece is selected
-- **Check Detection** - Visual indication when king is in check
-- **Game End Detection** - Checkmate, stalemate, and draw detection
-
-### Game Modes & Difficulty
-- **Beginner** (Depth 2) - Perfect for learning
-- **Easy** (Depth 5) - Casual play
-- **Medium** (Depth 10) - Moderate challenge
-- **Hard** (Depth 15) - Strong opponent
-- **Expert** (Depth 20) - Maximum difficulty
-
-### User Interface
-- **Dark/Light Mode** - Toggle between themes with system preference detection
-- **Responsive Design** - Works on mobile, tablet, and desktop
-- **Clean Material Design** - Modern, polished interface
-- **Game Statistics** - Track wins, losses, draws, and win streaks
-- **Move History** - View all moves in algebraic notation
-- **Captured Pieces** - See captured pieces and material advantage
-
-### Game Controls
-- **New Game** - Start a fresh game
-- **Undo Move** - Take back your last move (and AI response)
-- **Resign** - Forfeit the current game
-- **Flip Board** - Rotate the board 180 degrees
-- **Download PGN** - Export game in standard PGN format
-- **Copy FEN** - Copy current position to clipboard
-- **Sound Toggle** - Enable/disable game sounds
-
-### Additional Features
-- **Sound Effects** - Audio feedback for moves, captures, check, and game end
-- **Pawn Promotion** - Choose promotion piece (Queen, Rook, Bishop, Knight)
-- **Drag & Drop** - Intuitive piece movement
-- **Click-to-Move** - Alternative input method
-- **AI Thinking Indicator** - Visual feedback when AI is calculating
+- **AI opponent** — five difficulty levels (Beginner → Expert) via Stockfish.js (WebAssembly)
+- **Full chess rules** — castling, en passant, pawn promotion, check/checkmate/stalemate/draw detection
+- **Move input** — drag-and-drop or click-to-move, with legal move highlights
+- **Game tools** — undo last round, resign, flip board, export PGN, copy FEN
+- **Game info panel** — move history (algebraic notation), captured pieces, material advantage
+- **Statistics** — wins, losses, draws, and current win streak saved to local storage
+- **Sounds** — distinct audio cues for moves, captures, check, castling, and game end
+- **Themes** — dark / light mode with system preference detection
+- **Responsive layout** — works on desktop, tablet, and mobile
 
 ## Tech Stack
 
-- **Frontend**: React 18 with Vite
-- **Styling**: Tailwind CSS
-- **Chess Logic**: chess.js
-- **Chess Board**: react-chessboard
-- **AI Engine**: Stockfish.js (WebAssembly)
-- **Icons**: react-icons (Feather icons)
-- **State Management**: React Hooks
+| Layer | Library |
+|---|---|
+| UI framework | React 18 + Vite |
+| Styling | Tailwind CSS |
+| Chess logic | chess.js |
+| Board component | react-chessboard |
+| AI engine | Stockfish.js (WASM, Web Worker) |
+| Icons | react-icons |
 
-## Installation
+## Getting Started
 
-1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd chess-game-application
-```
-
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
-```
 
-3. Start the development server:
-```bash
+# Start the dev server
 npm run dev
 ```
 
-4. Build for production:
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
 ```bash
+# Production build
 npm run build
+
+# Preview the production build
+npm run preview
 ```
+
+## How to Play
+
+1. On the setup screen, pick your color (White / Black / Random) and an AI difficulty.
+2. Click **Start Game**.
+3. Move pieces by dragging or by clicking a piece then clicking a destination square. Green dots show legal moves.
+4. Pawn promotions open a modal — pick Queen, Rook, Bishop, or Knight.
+5. Use the controls panel on the right to undo, resign, flip the board, or start a new game.
+
+### AI Difficulty Levels
+
+| Level | Engine depth | Character |
+|---|---|---|
+| Beginner | 2 | Makes occasional blunders |
+| Easy | 5 | Casual play |
+| Medium | 10 | Moderate challenge |
+| Hard | 15 | Strong, consistent play |
+| Expert | 20 | Near-maximum strength |
 
 ## Project Structure
 
 ```
-chess-game/
+chess-game-application/
 ├── public/
-│   └── stockfish/          # Stockfish.js engine files
-├── src/
-│   ├── components/
-│   │   ├── Board/          # Chess board and promotion modal
-│   │   ├── GameInfo/       # Game status, history, captured pieces
-│   │   ├── Controls/       # Game setup and controls
-│   │   ├── Layout/         # Header and theme toggle
-│   │   └── UI/             # Reusable UI components
-│   ├── hooks/              # Custom React hooks
-│   ├── context/            # Theme context
-│   ├── utils/              # Helper functions and constants
-│   └── App.jsx             # Main application component
-└── package.json
+│   └── stockfish/          # Stockfish WASM engine files
+└── src/
+    ├── components/
+    │   ├── Board/           # ChessBoard, PromotionModal
+    │   ├── Controls/        # GameSetup, GameControls
+    │   ├── GameInfo/        # GameStatus, MoveHistory, CapturedPieces
+    │   ├── Layout/          # Header, ThemeToggle
+    │   └── UI/              # Button, Modal, Spinner
+    ├── context/
+    │   └── ThemeContext.jsx
+    ├── hooks/
+    │   ├── useChessGame.js  # Core game state and move logic
+    │   ├── useStockfish.js  # Stockfish Web Worker bridge
+    │   ├── useGameSound.js  # Audio cues
+    │   └── useStats.js      # Persistent statistics
+    ├── utils/
+    │   ├── constants.js
+    │   └── helpers.js
+    └── App.jsx
 ```
 
-## Usage
+## Credits
 
-### Starting a Game
-
-1. Select your color (White, Black, or Random)
-2. Choose AI difficulty level
-3. Click "Start Game"
-
-### Making Moves
-
-- **Drag & Drop**: Click and drag a piece to move it
-- **Click-to-Move**: Click a piece, then click the destination square
-- Legal moves are highlighted with green dots
-
-### Game Controls
-
-- **Undo Move**: Takes back both your move and the AI's response
-- **Resign**: Forfeit the game (counts as a loss)
-- **Flip Board**: Changes board orientation
-- **New Game**: Returns to setup screen
-
-### Exporting Games
-
-- **Download PGN**: Saves the game in standard PGN format
-- **Copy FEN**: Copies the current position in FEN notation
-
-## Browser Support
-
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-
-## Performance
-
-- Stockfish.js runs in a Web Worker to keep the UI responsive
-- AI thinking time varies by difficulty (800ms - 1500ms delay added for natural feel)
-- Smooth animations and transitions
+- [Stockfish.js](https://github.com/nmrugg/stockfish.js) — chess engine
+- [chess.js](https://github.com/jhlywa/chess.js) — move generation and validation
+- [react-chessboard](https://github.com/Clariity/react-chessboard) — board rendering
 
 ## License
 
 MIT
-
-## Credits
-
-- Chess engine: [Stockfish.js](https://github.com/nmrugg/stockfish.js)
-- Chess logic: [chess.js](https://github.com/jhlywa/chess.js)
-- Chess board: [react-chessboard](https://github.com/Clariity/react-chessboard)
